@@ -1,0 +1,14 @@
+{
+  "name": "nagadao-freemint-contract",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "generate:root": "node ./merkletree/merkle_tree.js"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.2.32"
+  }
+}
