@@ -4,11 +4,11 @@
   "description": "",
   "private": true,
   "scripts": {
-    "generate:root": "node ./merkletree/merkle_tree.js"
+    "generate:root": "node ./merkletree/merkletree.js"
   },
   "keywords": [],
   "devDependencies": {
-    "keccak256": "^1.0.6",
+    "ethers": "^5.6.9",
     "merkletreejs": "^0.2.32"
   }
 }
