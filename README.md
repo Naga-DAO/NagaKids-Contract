@@ -1,1 +1,1 @@
-# freeMint-Contract
+# NagaKid-Contract
