@@ -10,29 +10,25 @@ let whitelistAddresses = [
   ["0x09BAAB19FC77C19898140DADD30C4685C597620B", 3],
   ["0xCC4C29997177253376528C05D3DF91CF2D69061A", 1],
   ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", 1],
+  ["0xb4c79dab8f259c7aee6e5b2aa729821864227e84", 3],
 ];
 
 const leafNodes = whitelistAddresses.map(data => {
   let [address, amount] = data
-
   address = ethers.utils.getAddress(address)
 
-  const leafData = ethers.utils.defaultAbiCoder.encode(
-    ["address", "uint256"],
-    [address, amount]
-  );
-
-  return ethers.utils.keccak256(leafData);
+  return ethers.utils.solidityKeccak256(["address", "uint256"], [address, amount]);
 });
 
 const merkleTree = new MerkleTree(leafNodes, ethers.utils.keccak256, { sortPairs: true });
 
-const rootHash = merkleTree.getRoot();
 console.log('Whitelist Merkle Tree');
-console.log(merkleTree.toString());
-console.log("Root Hash: ", rootHash.toString('hex'));
+console.log(merkleTree.getRoot().toString());
+console.log("Root Hash: ", merkleTree.getHexRoot());
 
-const claimingAddress = leafNodes[6];
+const claimingAddress = leafNodes[7];
 
 const hexProof = merkleTree.getHexProof(claimingAddress);
+console.log("Proof: ", hexProof)
+
 console.log(merkleTree.verify(hexProof, claimingAddress, rootHash));
