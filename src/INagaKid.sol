@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
-interface INagaKidNFT is IERC721,IAccessControl {
+interface INagaKid is IERC721,IAccessControl {
 
     function totalSupply() external view returns (uint256);
     /**

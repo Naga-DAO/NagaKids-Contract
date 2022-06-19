@@ -5,11 +5,11 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./VerifySignature.sol";
 import "./Whitelist.sol";
-import "./INagaKidNFT.sol";
+import "./INagaKid.sol";
 
 contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGuard {
 
-    INagaKidNFT public NagaKidContract;
+    INagaKid public NagaKidContract;
 
     bool public isPublicMintOpen;
     bool public isWhitelistMintOpen;
@@ -28,10 +28,10 @@ contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGua
     event SetPublicMintOpen(bool isOpen);
     event SetMerkleRoot(bytes32 merkleRootBefore, bytes32 merkleRootAfter);
 
-    constructor(INagaKidNFT _NagaKidContract,bytes32 _merkleRoot) {
+    constructor(INagaKid _nagaKidContract, bytes32 _merkleRoot) {
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        setNagaKidContract(_NagaKidContract);
+        setNagaKidContract(_nagaKidContract);
         setMerkleRoot(_merkleRoot);
 
     }
@@ -41,10 +41,10 @@ contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGua
         _;
     }
 
-    function setNagaKidContract(INagaKidNFT _NagaKid) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setNagaKidContract(INagaKid _nagaKid) public onlyRole(DEFAULT_ADMIN_ROLE) {
         address NagaKidBefore = address(NagaKidContract);
-        NagaKidContract = _NagaKid;
-        address NagaKidAfter = address(_NagaKid);
+        NagaKidContract = _nagaKid;
+        address NagaKidAfter = address(_nagaKid);
 
         emit SetNagaKidContract(NagaKidBefore, NagaKidAfter);
     }
@@ -75,7 +75,6 @@ contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGua
         emit SetMerkleRoot(_merkleRootBefore,_merkleRoot);
     }
 
-
     function whitelistMint(bytes32[] calldata _proofMerkle, uint256 _amount) public payable nonReentrant Paused {
         require(isWhitelistMintOpen == true, "Whitelist not open to mint.");
         require(getTotalSupply() + _amount < 1111, "Over supply");
@@ -94,7 +93,6 @@ contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGua
     }
 
     function publicMint(bytes calldata _sig) public payable nonReentrant Paused {
-
         require(isPublicMintOpen == true, "Whitelist not open to mint.");
         require(tx.origin == msg.sender, "haha Contract can't call me");
         require(isPublicMinted(msg.sender) != true, "You are already minted.");
@@ -131,5 +129,4 @@ contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGua
     function isPause() public view returns (bool) {
         return NagaKidContract.paused();
     }
-    
 }

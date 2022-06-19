@@ -75,7 +75,6 @@ contract NagaKid is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
     }
 
     // The following functions are overrides required by Solidity.
-
     function supportsInterface(bytes4 interfaceId)
         public
         view
