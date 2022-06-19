@@ -1,0 +1,67 @@
+{
+	"compiler": {
+		"version": "0.8.15+commit.e14f2714"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "merkleRoot",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Whitelist.sol": "Whitelist"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/utils/cryptography/MerkleProof.sol": {
+			"keccak256": "0xaaa504ac17eb0298dcdf5733ce24021b4914f035b97f4400b92827341d3facb3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1aa68fa19422863cc91d23b5896917dbe79175ed47b591148aaeb3e98cb49752",
+				"dweb:/ipfs/QmeY64vTRbGhdXcytRKusfJsAfNF4aqr9e1SGBGdCYvW2j"
+			]
+		},
+		"Whitelist.sol": {
+			"keccak256": "0x49ded4889f7b0c4ab00d50c447af17dadbf030c189c0b9888b5f854af4f590e6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7d5379cd757ef1316caa9e2386f223cbe15a55f9e9882b2ee2f213948a90659c",
+				"dweb:/ipfs/QmY36vrTNsGMKTRuHcPf2WUHQR4Fju9Eg1wbNqUUv3p1KB"
+			]
+		}
+	},
+	"version": 1
+}
