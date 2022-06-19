@@ -1,1 +1,1 @@
-# nagadao-freemint-contract
+# NagaKid-Contract
