@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract NagaKid is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
-    
+
     using Counters for Counters.Counter;
     using Strings for *;
 
