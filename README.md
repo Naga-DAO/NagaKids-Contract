@@ -1,0 +1,1 @@
+# nagadao-freemint-contract
