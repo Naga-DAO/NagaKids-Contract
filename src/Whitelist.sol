@@ -1,26 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract Whitelist is AccessControl {
+contract Whitelist {
 
     bytes32 public merkleRoot;
 
-    constructor() {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-    }
-
-    function setMerkleRoot(bytes32 _merkleRoot) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        merkleRoot = _merkleRoot;
-    }
-
     function isWhitelist(
         bytes32[] calldata _proof,
-        address _address,
+        address _user,
         uint256 _amount
-    ) external view returns (bool) {
+    ) internal view returns (bool) {
         if (merkleRoot == 0) {
             return false;
         }
@@ -29,7 +20,9 @@ contract Whitelist is AccessControl {
             MerkleProof.verify(
                 _proof,
                 merkleRoot,
-                keccak256(abi.encodePacked(_address, _amount))
+                keccak256(abi.encodePacked(_user, _amount))
             );
+            
     }
+
 }

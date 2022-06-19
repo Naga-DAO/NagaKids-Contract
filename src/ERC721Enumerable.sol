@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.15;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -9,7 +9,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract MyToken is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
+contract NagaKid is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
+    
     using Counters for Counters.Counter;
     using Strings for *;
 
@@ -19,68 +20,35 @@ contract MyToken is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
 
     string private baseURI;
     string public baseExtension = ".json";
-    string public notRevealedUri;
     uint256 public constant maxSupply = 1111;
-    bool public revealed = true;
 
     constructor(
-        string memory _name,
-        string memory _symbol,
-        string memory _initBaseURI,
-        string memory _initNotRevealedUri
-    ) ERC721(_name, _symbol) {
+        string memory _initBaseURI
+    ) ERC721("NAGA KID", "NAGK") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         setBaseURI(_initBaseURI);
-        setNotRevealedURI(_initNotRevealedUri);
     }
 
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
 
-    function setBaseURI(string memory _newBaseURI)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setBaseURI(string memory _newBaseURI) public onlyRole(DEFAULT_ADMIN_ROLE) {
         baseURI = _newBaseURI;
     }
 
-    function setNotRevealedURI(string memory _notRevealedURI)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        notRevealedUri = _notRevealedURI;
-    }
-
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory){
         require(
             _exists(tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
 
-        if (revealed == false) {
-            return notRevealedUri;
-        }
-
         string memory currentBaseURI = _baseURI();
-        return
-            bytes(currentBaseURI).length > 0
-                ? string(
-                    abi.encodePacked(
-                        currentBaseURI,
-                        tokenId.toString(),
-                        baseExtension
-                    )
-                )
-                : "";
+        return bytes(currentBaseURI).length > 0 
+        ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension)) 
+        : "";
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
@@ -90,7 +58,7 @@ contract MyToken is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
     function unpause() public onlyRole(PAUSER_ROLE) {
         _unpause();
     }
-
+ 
     function safeMint(address to) public onlyRole(MINTER_ROLE) {
         uint256 tokenId = _tokenIdCounter.current();
         require(tokenId < maxSupply, "Over max supply");

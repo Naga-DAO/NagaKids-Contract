@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.15;
 
 contract VerifySignature {
     
     function getMessageHash(
-        address _to,
-        uint256 _amount,
-        string memory _message,
-        uint256 _nonce
-    ) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(_to, _amount, _message, _nonce));
+        address _user
+    ) public view returns (bytes32) {
+        return keccak256(abi.encodePacked(_user, address(this)));
     }
 
     function getEthSignedMessageHash(bytes32 _messageHash)
@@ -32,13 +29,10 @@ contract VerifySignature {
 
     function verify(
         address _signer,
-        address _to,
-        uint256 _amount,
-        string memory _message,
-        uint256 _nonce,
+        address _user,
         bytes memory signature
-    ) public pure returns (bool) {
-        bytes32 messageHash = getMessageHash(_to, _amount, _message, _nonce);
+    ) public view returns (bool) {
+        bytes32 messageHash = getMessageHash(_user);
         bytes32 ethSignedMessageHash = getEthSignedMessageHash(messageHash);
 
         return recoverSigner(ethSignedMessageHash, signature) == _signer;

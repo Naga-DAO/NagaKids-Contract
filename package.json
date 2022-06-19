@@ -1,14 +1,33 @@
 {
-  "name": "nagadao-freemint-contract",
-  "version": "1.0.0",
-  "description": "",
-  "private": true,
-  "scripts": {
-    "generate:root": "node ./merkletree/merkletree.js"
-  },
-  "keywords": [],
-  "devDependencies": {
-    "ethers": "^5.6.9",
-    "merkletreejs": "^0.2.32"
-  }
+    "name": "nagakids",
+    "version": "1.0.0",
+    "description": "Project \"NagaKids\"",
+    "private": true,
+    "scripts": {
+        "generate:root": "node ./merkletree/merkletree.js",
+        "start": "remixd -s ./src --remix-ide https://remix.ethereum.org"
+    },
+    "keywords": [],
+    "devDependencies": {
+        "ethers": "^5.6.9",
+        "merkletreejs": "^0.2.32"
+    },
+    "dependencies": {
+        "remixd": "^0.2.4"
+    },
+    "main": "index.js",
+    "directories": {
+        "lib": "lib",
+        "test": "test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Naga-DAO/NagaKid-Contract.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Naga-DAO/NagaKid-Contract/issues"
+    },
+    "homepage": "https://github.com/Naga-DAO/NagaKid-Contract#readme"
 }
