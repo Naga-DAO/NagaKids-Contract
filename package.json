@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "generate": "node ./merkletree/merkletree.js",
-    "dev": "remixd -s ./contracts -u https://remix.ethereum.org"
+    "dev": "remixd -s . -u https://remix.ethereum.org"
   },
   "keywords": [],
   "devDependencies": {
