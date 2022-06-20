@@ -1,39 +1,33 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "./VerifySignature.sol";
-import "./Whitelist.sol";
 import "./INagaKid.sol";
 
-contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGuard {
+contract MintNagaKid is AccessControl, ReentrancyGuard {
+    // Constants
+    bytes32 public constant WHITELIST_MINT_ROUND = 0x68e7d51fdb912cb107dda2e59b053d87fcca666dd0ef5339cd3474ccb5276bba; // keccak256("WHITELIST_MINT_ROUND");
+    bytes32 public constant NAGA_HOLDER_MINT_ROUND = 0xb3c595e55271590809f54e2f4fc3a582754f45b104dd3c41666e2ad310493db3; // keccak256("NAGA_HOLDER_MINT_ROUND");
 
-    INagaKid public NagaKidContract;
+    INagaKid public nagaKidContract;
+    bytes32 public currentMintRound;
+    bytes32 public merkleRoot;
 
-    bool public isPublicMintOpen;
-    bool public isWhitelistMintOpen;
+    mapping(address => bool) internal _isUserMinted;
+    mapping(address => uint256) internal _userMintedAmount;
 
-    address public signer;
-
-    mapping(address => bool) internal _isWhitelistMinted;
-    mapping(address => uint256) internal _isWhitelistMintedAmount;
-    mapping(address => bool) internal _isPublicMinted;
-
-    event WhitelistMinted(address indexed user,uint256 amount,uint256 timestamp);
-    event PublicMinted(address indexed user,uint256 timestamp);
-    event SetNagaKidContract(address NagaKidBefore,address NagaKidAfter);
-    event SetSigner(address signerBefore, address signerAfter);
-    event SetWhitelistMintOpen(bool isOpen);
-    event SetPublicMintOpen(bool isOpen);
-    event SetMerkleRoot(bytes32 merkleRootBefore, bytes32 merkleRootAfter);
+    // Events
+    event Minted(address indexed user, uint256 amount, uint256 timestamp);
+    event NagaKidContractChanged(address nagaKidBefore, address nagaKidAfter);
+    event MerkleRootChanged(bytes32 merkleRootBefore, bytes32 merkleRootAfter);
+    event RoundChanged(bytes32 roundBefore, bytes32 roundAfter);
 
     constructor(INagaKid _nagaKidContract, bytes32 _merkleRoot) {
-
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         setNagaKidContract(_nagaKidContract);
         setMerkleRoot(_merkleRoot);
-
     }
 
     modifier Paused() {
@@ -42,91 +36,61 @@ contract MintNagaKid is Whitelist, VerifySignature, AccessControl, ReentrancyGua
     }
 
     function setNagaKidContract(INagaKid _nagaKid) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        address NagaKidBefore = address(NagaKidContract);
-        NagaKidContract = _nagaKid;
-        address NagaKidAfter = address(_nagaKid);
+        address nagaKidBefore = address(nagaKidContract);
+        nagaKidContract = _nagaKid;
+        address nagaKidAfter = address(_nagaKid);
 
-        emit SetNagaKidContract(NagaKidBefore, NagaKidAfter);
-    }
-    
-    function setSigner(address _signer) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        address signerBefore = signer;
-        signer = _signer;
-
-        emit SetSigner(signerBefore,_signer);
-    } 
-
-    function setWhitelistMintOpen(bool _isOpen) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        isWhitelistMintOpen = _isOpen;
-
-        emit SetWhitelistMintOpen(_isOpen);
+        emit NagaKidContractChanged(nagaKidBefore, nagaKidAfter);
     }
 
-    function setPublicMintOpen(bool _isOpen) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        isPublicMintOpen = _isOpen;
+    function setRound(bytes32 _round) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        bytes32 _roundBefore = currentMintRound;
+        currentMintRound = _round;
 
-        emit SetPublicMintOpen(_isOpen);
+        emit RoundChanged(_roundBefore, _round);
     }
-    
+
     function setMerkleRoot(bytes32 _merkleRoot) public onlyRole(DEFAULT_ADMIN_ROLE) {
         bytes32 _merkleRootBefore = merkleRoot;
         merkleRoot = _merkleRoot;
 
-        emit SetMerkleRoot(_merkleRootBefore,_merkleRoot);
+        emit MerkleRootChanged(_merkleRootBefore, _merkleRoot);
     }
 
-    function whitelistMint(bytes32[] calldata _proofMerkle, uint256 _amount) public payable nonReentrant Paused {
-        require(isWhitelistMintOpen == true, "Whitelist not open to mint.");
-        require(getTotalSupply() + _amount < 1111, "Over supply");
-        require(isWhitelistMinted(msg.sender) != true, "You are already minted.");
-        require(NagaKidContract.hasRole(NagaKidContract.MINTER_ROLE(),address(this)) == true,"This Contract not have permission to mint.");
-        require(isWhitelist(_proofMerkle , msg.sender , _amount ), "Unauthorized WhitelistMint This User.");
+    function mint(bytes32[] calldata _proof, uint256 _amount, bytes32 _round) public payable nonReentrant Paused {
+        require(currentMintRound == _round, "You are not in this minting round.");
+        require(getTotalSupply() + _amount < getMaxSupply(), "Over supply");
+        require(isUserMinted(msg.sender) == false, "You are already minted.");
+        require(nagaKidContract.hasRole(nagaKidContract.MINTER_ROLE(), address(this)) == true, "This Contract not have permission to mint.");
+        require(MerkleProof.verify(_proof, merkleRoot, keccak256(abi.encodePacked(msg.sender, _amount, _round))), "Unauthorized WhitelistMint This User.");
 
-        _isWhitelistMinted[msg.sender] = true;
-        _isWhitelistMintedAmount[msg.sender] += _amount;
+        _isUserMinted[msg.sender] = true;
+        _userMintedAmount[msg.sender] += _amount;
 
         for(uint i = 0; i< _amount; i++) {
-            NagaKidContract.safeMint(msg.sender);
+            nagaKidContract.safeMint(msg.sender);
         }
 
-        emit WhitelistMinted(msg.sender,_amount,block.timestamp);
+        emit Minted(msg.sender, _amount, block.timestamp);
     }
 
-    function publicMint(bytes calldata _sig) public payable nonReentrant Paused {
-        require(isPublicMintOpen == true, "Whitelist not open to mint.");
-        require(tx.origin == msg.sender, "haha Contract can't call me");
-        require(isPublicMinted(msg.sender) != true, "You are already minted.");
-        require(getTotalSupply() + 1 < 1111,"Over Supply Amount");
-        require(NagaKidContract.hasRole(NagaKidContract.MINTER_ROLE(),address(this)) == true,"This Contract not have permission to mint.");
-        require(verify(signer,msg.sender,_sig), "Unauthorized PublicMint This User.");
-
-        _isPublicMinted[msg.sender] = true;
-        NagaKidContract.safeMint(msg.sender);
-        
-        emit PublicMinted(msg.sender,block.timestamp);
+    function isUserMinted(address _user) public view returns(bool) {
+        return _isUserMinted[_user];
     }
 
-    function isWhitelistMinted(address _user) public view returns(bool) {
-        return _isWhitelistMinted[_user];
-    }
-
-    function isWhitelistMintedAmount(address _user) public view returns(uint256) {
-        return _isWhitelistMintedAmount[_user];
-    }
-
-    function isPublicMinted(address _user) public view returns(bool) {
-        return _isPublicMinted[_user];
+    function userMintedAmount(address _user) public view returns(uint256) {
+        return _userMintedAmount[_user];
     }
 
     function getTotalSupply() public view returns (uint256) {
-        return NagaKidContract.totalSupply();
+        return nagaKidContract.totalSupply();
     }
 
     function getMaxSupply() public view returns (uint256) {
-        return NagaKidContract.maxSupply();
+        return nagaKidContract.maxSupply();
     }
 
     function isPause() public view returns (bool) {
-        return NagaKidContract.paused();
+        return nagaKidContract.paused();
     }
 }
