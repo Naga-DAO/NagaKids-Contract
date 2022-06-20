@@ -58,12 +58,42 @@ contract NagaKid is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
     function unpause() public onlyRole(PAUSER_ROLE) {
         _unpause();
     }
+
+    function batchMint(address _to,uint _amount) public onlyRole(MINTER_ROLE) {
+        uint256 tokenId = _tokenIdCounter.current(); 
+        require(tokenId + _amount < maxSupply, "Over max supply");
+        for(uint i = 0; i < _amount; i++){
+            _tokenIdCounter.increment();
+            _safeMint(_to, _tokenIdCounter.current());
+        }
+    }
  
-    function safeMint(address to) public onlyRole(MINTER_ROLE) {
-        uint256 tokenId = _tokenIdCounter.current();
+    function safeMint(address _to) public onlyRole(MINTER_ROLE) {
+        uint256 tokenId = _tokenIdCounter.current(); 
         require(tokenId < maxSupply, "Over max supply");
         _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
+        _safeMint(_to, _tokenIdCounter.current());
+    }
+
+    function walletOfOwner(address _owner) public view returns (uint256[] memory) {
+        uint256 ownerTokenCount = balanceOf(_owner);
+        uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
+        uint256 currentTokenId = 1;
+        uint256 ownedTokenIndex = 0;
+
+        while (ownedTokenIndex < ownerTokenCount && currentTokenId <= maxSupply) {
+        address currentTokenOwner = ownerOf(currentTokenId);
+
+        if (currentTokenOwner == _owner) {
+            ownedTokenIds[ownedTokenIndex] = currentTokenId;
+
+            ownedTokenIndex++;
+        }
+
+        currentTokenId++;
+        }
+
+        return ownedTokenIds;
     }
 
     function _beforeTokenTransfer(

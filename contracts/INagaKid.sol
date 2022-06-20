@@ -15,8 +15,9 @@ interface INagaKid is IERC721,IAccessControl {
     function tokenByIndex(uint256 index) external view returns (uint256);
     function maxSupply() external view returns (uint256);
     function paused() external view returns (bool);
-    function safeMint(address to) external;
     function PAUSER_ROLE() external view returns (bytes32);
     function MINTER_ROLE() external view returns (bytes32);
-
+    function batchMint(address _to,uint _amount) external;
+    function safeMint(address _to) external;
+    function walletOfOwner(address _owner) external view returns (uint256[] memory);
 }

@@ -10,13 +10,14 @@ contract MintNagaKid is AccessControl, ReentrancyGuard {
     // Constants
     bytes32 public constant WHITELIST_MINT_ROUND = 0x68e7d51fdb912cb107dda2e59b053d87fcca666dd0ef5339cd3474ccb5276bba; // keccak256("WHITELIST_MINT_ROUND");
     bytes32 public constant NAGA_HOLDER_MINT_ROUND = 0xb3c595e55271590809f54e2f4fc3a582754f45b104dd3c41666e2ad310493db3; // keccak256("NAGA_HOLDER_MINT_ROUND");
-
+    bytes32 public constant DEFAULT = 0x0000000000000000000000000000000000000000000000000000000000000000;
+    
     INagaKid public nagaKidContract;
     bytes32 public currentMintRound;
     bytes32 public merkleRoot;
 
-    mapping(address => bool) internal _isUserMinted;
-    mapping(address => uint256) internal _userMintedAmount;
+    mapping(address => mapping(bytes32 => bool)) internal _isUserMinted;
+    mapping(address => mapping(bytes32 => uint256)) internal _userMintedAmount;
 
     // Events
     event Minted(address indexed user, uint256 amount, uint256 timestamp);
@@ -60,26 +61,24 @@ contract MintNagaKid is AccessControl, ReentrancyGuard {
     function mint(bytes32[] calldata _proof, uint256 _amount, bytes32 _round) public payable nonReentrant Paused {
         require(currentMintRound == _round, "You are not in this minting round.");
         require(getTotalSupply() + _amount < getMaxSupply(), "Over supply");
-        require(isUserMinted(msg.sender) == false, "You are already minted.");
+        require(isUserMinted(msg.sender,_round) == false, "You are already minted.");
         require(nagaKidContract.hasRole(nagaKidContract.MINTER_ROLE(), address(this)) == true, "This Contract not have permission to mint.");
         require(MerkleProof.verify(_proof, merkleRoot, keccak256(abi.encodePacked(msg.sender, _amount, _round))), "Unauthorized WhitelistMint This User.");
 
-        _isUserMinted[msg.sender] = true;
-        _userMintedAmount[msg.sender] += _amount;
+        _isUserMinted[msg.sender][_round] = true;
+        _userMintedAmount[msg.sender][_round] += _amount;
 
-        for(uint i = 0; i< _amount; i++) {
-            nagaKidContract.safeMint(msg.sender);
-        }
+        nagaKidContract.batchMint(msg.sender,_amount);
 
         emit Minted(msg.sender, _amount, block.timestamp);
     }
 
-    function isUserMinted(address _user) public view returns(bool) {
-        return _isUserMinted[_user];
+    function isUserMinted(address _user,bytes32 _round) public view returns(bool) {
+        return _isUserMinted[_user][_round];
     }
 
-    function userMintedAmount(address _user) public view returns(uint256) {
-        return _userMintedAmount[_user];
+    function userMintedAmount(address _user,bytes32 _round) public view returns(uint256) {
+        return _userMintedAmount[_user][_round];
     }
 
     function getTotalSupply() public view returns (uint256) {
