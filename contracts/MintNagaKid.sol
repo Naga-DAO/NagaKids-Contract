@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./INagaKid.sol";
 
 contract MintNagaKid is AccessControl, ReentrancyGuard {
-    // Constants
+
     bytes32 public constant WHITELIST_MINT_ROUND = 0x68e7d51fdb912cb107dda2e59b053d87fcca666dd0ef5339cd3474ccb5276bba; // keccak256("WHITELIST_MINT_ROUND");
     bytes32 public constant NAGA_HOLDER_MINT_ROUND = 0xb3c595e55271590809f54e2f4fc3a582754f45b104dd3c41666e2ad310493db3; // keccak256("NAGA_HOLDER_MINT_ROUND");
     bytes32 public constant DEFAULT = 0x0000000000000000000000000000000000000000000000000000000000000000;
@@ -59,10 +59,11 @@ contract MintNagaKid is AccessControl, ReentrancyGuard {
     }
 
     function mint(bytes32[] calldata _proof, uint256 _amount, bytes32 _round) public payable nonReentrant Paused {
+        require(_round != DEFAULT,"Mint is not approved.");
         require(currentMintRound == _round, "You are not in this minting round.");
         require(getTotalSupply() + _amount < getMaxSupply(), "Over supply");
         require(isUserMinted(msg.sender,_round) == false, "You are already minted.");
-        require(nagaKidContract.hasRole(nagaKidContract.MINTER_ROLE(), address(this)) == true, "This Contract not have permission to mint.");
+        require(nagaKidContract.hasRole(nagaKidContract.MINTER_ROLE(), address(this)) == true, "Contract Mint is not approved.");
         require(MerkleProof.verify(_proof, merkleRoot, keccak256(abi.encodePacked(msg.sender, _amount, _round))), "Unauthorized WhitelistMint This User.");
 
         _isUserMinted[msg.sender][_round] = true;
