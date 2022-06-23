@@ -2,9 +2,8 @@
 pragma solidity ^0.8.15;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/access/IAccessControl.sol";
 
-interface INagaKid is IERC721,IAccessControl {
+interface INagaKid is IERC721 {
 
     function totalSupply() external view returns (uint256);
     /**
@@ -14,10 +13,9 @@ interface INagaKid is IERC721,IAccessControl {
     function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256);
     function tokenByIndex(uint256 index) external view returns (uint256);
     function maxSupply() external view returns (uint256);
-    function paused() external view returns (bool);
-    function PAUSER_ROLE() external view returns (bytes32);
-    function MINTER_ROLE() external view returns (bytes32);
+    function isMinter(address minter) external view returns(bool);
     function batchMint(address _to,uint _amount) external;
     function safeMint(address _to) external;
     function walletOfOwner(address _owner) external view returns (uint256[] memory);
+    
 }

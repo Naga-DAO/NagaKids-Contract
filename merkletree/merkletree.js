@@ -8,8 +8,8 @@ console.log(WHITELIST_MINT_ROUND);
 
 // The address in remix
 let whitelistAddresses = [
-    ["0x6d644A42aCc9156437f20Ac002F1a73A74863Efa", 2, WHITELIST_MINT_ROUND],
-    ["0x6d644A42aCc9156437f20Ac002F1a73A74863Efa", 3, NAGA_HOLDER_MINT_ROUND],
+    ["0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", 2, WHITELIST_MINT_ROUND],
+    ["0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", 3, NAGA_HOLDER_MINT_ROUND],
 ];
 
 const leafNodes = whitelistAddresses.map((data) => {
@@ -23,7 +23,7 @@ const merkleTree = new MerkleTree(leafNodes, ethers.utils.keccak256, { sortPairs
 
 console.log("Whitelist Merkle Tree");
 console.log(merkleTree.getRoot().toString());
-console.log("Root Hash: ", merkleTree.getHexRoot());
+console.log("Root Hash FOR DEPLOY: ", merkleTree.getHexRoot());
 
 const claimingAddress = leafNodes[0];
 

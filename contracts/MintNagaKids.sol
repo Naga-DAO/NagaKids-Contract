@@ -42,11 +42,6 @@ contract MintNagaKids is AccessControl, ReentrancyGuard {
 
     }
 
-    modifier Paused() {
-        require(isPause() == false,"NagaKid was Paused.");
-        _;
-    }
-
     function setNagaKidContract(INagaKid _nagaKid) public onlyRole(DEFAULT_ADMIN_ROLE) {
         address nagaKidBefore = address(nagaKidContract);
         nagaKidContract = _nagaKid;
@@ -69,12 +64,12 @@ contract MintNagaKids is AccessControl, ReentrancyGuard {
         emit MerkleRootChanged(_merkleRootBefore, _merkleRoot);
     }
 
-    function mint(bytes32[] calldata _proof, uint256 _amount, bytes32 _round) public payable nonReentrant Paused {
+    function mint(bytes32[] calldata _proof, uint256 _amount, bytes32 _round) public payable nonReentrant {
         require(_round != DEFAULT,"Mint is not approved.");
-        require(currentMintRound == _round, "You are not in this minting round.");
+        require(currentMintRound == _round, "Contract are not in this minting round.");
         require(getTotalSupply() + _amount < getMaxSupply(), "Over supply");
         require(isUserMinted(msg.sender,_round) == false, "You are already minted.");
-        require(nagaKidContract.hasRole(nagaKidContract.MINTER_ROLE(), address(this)) == true, "Contract Mint is not approved.");
+        require(nagaKidContract.isMinter(address(this)), "Contract Mint is not approved.");
         require(MerkleProof.verify(_proof, merkleRoot, keccak256(abi.encodePacked(msg.sender, _amount, _round))), "Unauthorized WhitelistMint This User.");
 
         _isUserMinted[msg.sender][_round] = true;
@@ -126,7 +121,4 @@ contract MintNagaKids is AccessControl, ReentrancyGuard {
         return nagaKidContract.maxSupply();
     }
 
-    function isPause() public view returns (bool) {
-        return nagaKidContract.paused();
-    }
 }
