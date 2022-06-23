@@ -31,7 +31,7 @@ contract NagaKids is ERC721, ERC721Enumerable, Ownable, ERC721Burnable {
     constructor(
         string memory _initBaseURI,
         address _preMintAddress
-    ) ERC721("NAGA KID", "NAGK") {
+    ) ERC721("NAGA KIDS", "NAGK") {
 
         setBaseURI(_initBaseURI);
 
