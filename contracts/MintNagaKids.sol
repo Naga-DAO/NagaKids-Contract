@@ -8,10 +8,11 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./INagaKid.sol";
 
-contract MintNagaKid is AccessControl, ReentrancyGuard {
+contract MintNagaKids is AccessControl, ReentrancyGuard {
 
     bytes32 public constant WHITELIST_MINT_ROUND = keccak256("WHITELIST_MINT_ROUND"); // 0x68e7d51fdb912cb107dda2e59b053d87fcca666dd0ef5339cd3474ccb5276bba
     bytes32 public constant NAGA_HOLDER_MINT_ROUND = keccak256("NAGA_HOLDER_MINT_ROUND"); // 0xb3c595e55271590809f54e2f4fc3a582754f45b104dd3c41666e2ad310493db3
+    bytes32 public constant SPECIAL_MINT_ROUND = keccak256("SPECIAL_MINT_ROUND"); // 0x5c8c0ce107274ad0569bd760c3d2406c1ed72c697935f3f965bd096c5cdedee4
     bytes32 public constant DEFAULT = 0x0000000000000000000000000000000000000000000000000000000000000000;
     
     bytes32 public constant WITHDRAW_ROLE = keccak256("WITHDRAW_ROLE");

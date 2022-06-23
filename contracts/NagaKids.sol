@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract NagaKid is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
+contract NagaKids is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
 
     using Counters for Counters.Counter;
     using Strings for *;
@@ -23,12 +23,16 @@ contract NagaKid is ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
     uint256 public constant maxSupply = 1111;
 
     constructor(
-        string memory _initBaseURI
+        string memory _initBaseURI,
+        address _preMintAddress
     ) ERC721("NAGA KID", "NAGK") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         setBaseURI(_initBaseURI);
+
+        // preMint 111 => ~ 10% of maxSuplly //
+        batchMint(_preMintAddress,111);
     }
 
     function _baseURI() internal view override returns (string memory) {
