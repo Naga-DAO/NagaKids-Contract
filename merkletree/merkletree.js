@@ -28,5 +28,5 @@ console.log("Root Hash FOR DEPLOY: ", merkleTree.getHexRoot());
 const claimingAddress = leafNodes[0];
 
 const hexProof = merkleTree.getHexProof(claimingAddress);
-console.log("Proof: ", hexProof);
+console.log("Proof: ", hexProof); // ["0xf30a102a6f437bec78958e5c3b65eb50b20800b7216a20070b13f9ae6c0c9a2d"]
 console.log(merkleTree.verify(hexProof, claimingAddress, merkleTree.getRoot()));
