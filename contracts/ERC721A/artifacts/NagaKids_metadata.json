@@ -975,11 +975,11 @@
 			]
 		},
 		"ERC721A/NagaKidsERC721A.sol": {
-			"keccak256": "0x862b27d92274fe8671941784805f396a46a4a1237001170464f2ca6bb28aa2db",
+			"keccak256": "0x9d31a745bee18a96e0b628a6b65496240314b4bcf84855bf2562bc0223cc0b48",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9c0974d114ea05d9fb7ce9346e0dee5eb1540d000e816673178188170a554dda",
-				"dweb:/ipfs/QmPiduopBnUMefWahQ9XSsnZzU5tTCW7pFvvMZ2L4qw4Ho"
+				"bzz-raw://872545ca64165d9a3e4ef61d176aa5f0470655580abd2b04751b5c5df44ff2a6",
+				"dweb:/ipfs/QmUaPcw15fBoHBGou6cqLjNb4JL1b6ZCnCJQLCdezvqGvR"
 			]
 		},
 		"erc721a/contracts/ERC721A.sol": {

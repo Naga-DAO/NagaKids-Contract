@@ -13,6 +13,11 @@
 						"type": "address"
 					},
 					{
+						"internalType": "address",
+						"name": "_signer",
+						"type": "address"
+					},
+					{
 						"internalType": "bytes32",
 						"name": "_merkleRoot",
 						"type": "bytes32"
@@ -38,31 +43,6 @@
 					}
 				],
 				"name": "MerkleRootChanged",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "user",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "timestamp",
-						"type": "uint256"
-					}
-				],
-				"name": "Minted",
 				"type": "event"
 			},
 			{
@@ -108,6 +88,82 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "bool",
+						"name": "boolean",
+						"type": "bool"
+					}
+				],
+				"name": "PrivateMintChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "PrivateMinted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "boolean",
+						"type": "bool"
+					}
+				],
+				"name": "PublicMintChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "PublicMinted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "bytes32",
 						"name": "roundBefore",
 						"type": "bytes32"
@@ -120,6 +176,25 @@
 					}
 				],
 				"name": "RoundChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "signerBefore",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "signerAfter",
+						"type": "address"
+					}
+				],
+				"name": "SignerChanged",
 				"type": "event"
 			},
 			{
@@ -237,19 +312,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "SPECIAL_MINT_ROUND",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "WHITELIST_MINT_ROUND",
 				"outputs": [
 					{
@@ -275,6 +337,29 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "bytes32[]",
+						"name": "_proof",
+						"type": "bytes32[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "_round",
+						"type": "bytes32"
+					}
+				],
+				"name": "allowlistMint",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "currentMintRound",
 				"outputs": [
@@ -285,6 +370,25 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_messageHash",
+						"type": "bytes32"
+					}
+				],
+				"name": "getEthSignedMessageHash",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -301,6 +405,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					}
+				],
+				"name": "getMessageHash",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "getTotalSupply",
 				"outputs": [
@@ -308,6 +431,51 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "isPrivateMintOpen",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "isPublicMintOpen",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					}
+				],
+				"name": "isPublicMinted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -351,29 +519,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "bytes32[]",
-						"name": "_proof",
-						"type": "bytes32[]"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "_round",
-						"type": "bytes32"
-					}
-				],
-				"name": "mint",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "nagaKidContract",
 				"outputs": [
@@ -397,6 +542,43 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "_sig",
+						"type": "bytes"
+					}
+				],
+				"name": "publicMint",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_ethSignedMessageHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes",
+						"name": "_signature",
+						"type": "bytes"
+					}
+				],
+				"name": "recoverSigner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -435,6 +617,32 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bool",
+						"name": "_bool",
+						"type": "bool"
+					}
+				],
+				"name": "setPrivateMint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "_bool",
+						"type": "bool"
+					}
+				],
+				"name": "setPublicMint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "_round",
 						"type": "bytes32"
@@ -443,6 +651,61 @@
 				"name": "setRound",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_signer",
+						"type": "address"
+					}
+				],
+				"name": "setSigner",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "signer",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "sig",
+						"type": "bytes"
+					}
+				],
+				"name": "splitSignature",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -477,6 +740,35 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_signer",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "signature",
+						"type": "bytes"
+					}
+				],
+				"name": "verify",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -639,11 +931,19 @@
 			]
 		},
 		"ERC721A/MintNagaKids.sol": {
-			"keccak256": "0xa03d08345bca3d8e4b8f316b2414dc73be732f711bb32e11b96f53b18046239d",
+			"keccak256": "0x2c825038df9437ee77e7dcd65757d53cf5d0fdc588267e195dae0f623419f270",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0bb184d9211d9d0cc78edebff3cbf039ef703056e85a7cbdf34958159ff98c81",
-				"dweb:/ipfs/QmcXcaRDcSNnwLHsGSssTQthLbhASkQGDx37tbQHaVBQbB"
+				"bzz-raw://b9defb2fe8a870b061d7de7a5eac5bd043c7c2adcdb2a63f1b39d3350318c712",
+				"dweb:/ipfs/QmPHCfx4kypsZnEzPgwsAtyv7sB47i8nPvoYDsAL2c53Bx"
+			]
+		},
+		"ERC721A/VerifySignature.sol": {
+			"keccak256": "0x7b595fba7b304df2d793814bf6f1ead1687b6de712cdbf02113e57ba478df9b6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ba1c72776be7d04ed5cf7f224d796db5ec4a48c9523c1367cc513c6476e7db1d",
+				"dweb:/ipfs/QmanAvNztLiKWauT1Usjmfzm8kvs3iMgYBx1Q8JEZLg1ej"
 			]
 		},
 		"erc721a/contracts/IERC721A.sol": {

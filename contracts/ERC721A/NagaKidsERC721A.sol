@@ -19,8 +19,8 @@ contract NagaKids is ERC721A, ERC721AQueryable, ERC721ABurnable, Ownable {
 
     event SetAllowMinter(address indexed caller, address indexed minter, bool allowed);
 
-    modifier Minter(address _minter) {
-        require(isMinter(_minter),"You are not a minter");
+    modifier onlyMinter() {
+        require(isMinter(msg.sender),"You are not a minter");
         _;
     }
 
@@ -63,7 +63,7 @@ contract NagaKids is ERC721A, ERC721AQueryable, ERC721ABurnable, Ownable {
         : "";
     }
  
-    function safeMint(address to,uint amount) public Minter(msg.sender) {
+    function safeMint(address to,uint amount) public onlyMinter {
         uint256 totalSupply = totalSupply();
         require(totalSupply + amount <= maxSupply, "Over max supply");
         _safeMint(to, amount);
