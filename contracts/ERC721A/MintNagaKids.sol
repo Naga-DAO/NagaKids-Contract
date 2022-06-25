@@ -62,7 +62,7 @@ contract MintNagaKids is Ownable, ReentrancyGuard {
         emit MerkleRootChanged(_merkleRootBefore, _merkleRoot);
     }
 
-    function mint(bytes32[] calldata _proof, uint256 _amount, bytes32 _round) public payable nonReentrant {
+    function allowlistMint(bytes32[] calldata _proof, uint256 _amount, bytes32 _round) public payable nonReentrant {
         require(_round != DEFAULT,"Mint is not approved.");
         require(currentMintRound == _round, "Contract are not in this minting round.");
         require(getTotalSupply() + _amount < getMaxSupply(), "Over supply");
