@@ -4,10 +4,8 @@ const { MerkleTree } = require("merkletreejs");
 const WHITELIST_MINT_ROUND = ethers.utils.solidityKeccak256(["string"], ["WHITELIST_MINT_ROUND"]);
 const NAGA_HOLDER_MINT_ROUND = ethers.utils.solidityKeccak256(["string"], ["NAGA_HOLDER_MINT_ROUND"]);
 
-console.log(WHITELIST_MINT_ROUND);
-
 // The address in remix
-let whitelistAddresses = [
+const whitelistAddresses = [
     ["0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", 2, WHITELIST_MINT_ROUND],
     ["0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", 3, NAGA_HOLDER_MINT_ROUND],
 ];
@@ -22,7 +20,7 @@ const leafNodes = whitelistAddresses.map((data) => {
 const merkleTree = new MerkleTree(leafNodes, ethers.utils.keccak256, { sortPairs: true });
 
 console.log("Whitelist Merkle Tree");
-console.log(merkleTree.getRoot().toString());
+console.log(merkleTree.toString());
 console.log("Root Hash FOR DEPLOY: ", merkleTree.getHexRoot());
 
 const claimingAddress = leafNodes[0];
