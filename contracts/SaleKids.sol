@@ -69,7 +69,7 @@ contract SaleKids is Ownable, ReentrancyGuard {
         bytes32 _oldRound = currentPrivateRound;
         currentPrivateRound = _round;
 
-        emit RoundChanged(_oldRound, _round);
+        emit PrivateRoundChanged(_oldRound, _round);
     }
 
     function setSigner(address _signer) public onlyOwner {
