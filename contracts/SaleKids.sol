@@ -53,7 +53,7 @@ contract SaleKids is Ownable, ReentrancyGuard {
     }
 
     function setPrivateMint(bool _bool) public onlyOwner {
-        isPublic = _bool;
+        isPrivate = _bool;
 
         emit PrivateMintChanged(_bool);
     }
