@@ -28,6 +28,9 @@ async function main() {
 
   await delay(60000);
 
+  const SaleKids = await ethers.getContractFactory("SaleKids");
+  const sale = await SaleKids.deploy("ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329);
+
   await hre.run("verify:verify", {
     address: kids.address,
     constructorArguments: ["ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329],
