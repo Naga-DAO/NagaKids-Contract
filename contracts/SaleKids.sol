@@ -42,7 +42,6 @@ contract SaleKids is Ownable, ReentrancyGuard {
 
     constructor(INagaKid _nagaKids, bytes32 _merkleRoot) {
         setNagaKids(_nagaKids);
-        setMerkleRoot(_merkleRoot);
     }
 
     function setPublicMint(bool _bool) public onlyOwner {
