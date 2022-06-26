@@ -29,7 +29,7 @@ async function main() {
   await delay(60000);
 
   await hre.run("verify:verify", {
-    address: mazk.address,
+    address: kids.address,
     constructorArguments: ["ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329],
   }); 
 
