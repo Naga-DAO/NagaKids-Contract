@@ -21,19 +21,26 @@ async function main() {
   // We get the contract to deploy
   const hre = require("hardhat");
   const NagaKids = await ethers.getContractFactory("NagaKids");
-  const kids = await NagaKids.deploy("ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329);
+  const kids = await NagaKids.deploy("ipfs://QmZjGrntfkX75EP4f3EWVavyULFPzJrDWffFYvCJEBhX8h/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329);
 
   await kids.deployed();
   console.log("NagaKids deployed to:", kids.address);
 
   await delay(60000);
 
+  await hre.run("verify:verify", {
+    address: kids.address,
+    constructorArguments: ["ipfs://QmZjGrntfkX75EP4f3EWVavyULFPzJrDWffFYvCJEBhX8h/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329],
+  }); 
+
   const SaleKids = await ethers.getContractFactory("SaleKids");
-  const sale = await SaleKids.deploy("ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329);
+  const sale = await SaleKids.deploy(kids.address);
+
+  await delay(60000);
 
   await hre.run("verify:verify", {
     address: kids.address,
-    constructorArguments: ["ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329],
+    constructorArguments: [kids.address],
   }); 
 
 }
