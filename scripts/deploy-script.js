@@ -3,7 +3,12 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-const hre = require("hardhat");
+import { ethers } from "hardhat";
+
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -14,19 +19,25 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const hre = require("hardhat");
+  const NagaKids = await ethers.getContractFactory("NagaKids");
+  const kids = await NagaKids.deploy("ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329);
 
-  await greeter.deployed();
+  await kids.deployed();
+  console.log("NagaKids deployed to:", kids.address);
 
-  console.log("Greeter deployed to:", greeter.address);
+  await delay(60000);
+
+  await hre.run("verify:verify", {
+    address: mazk.address,
+    constructorArguments: ["ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/", 0x0E71D23d8ed622EE422bfcDa6E064433C34C4329],
+  }); 
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
